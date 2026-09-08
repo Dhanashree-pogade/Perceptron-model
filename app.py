@@ -243,8 +243,8 @@ HTML = """
         </h1>
 
         <p class="description">
-            Enter two numerical values and let the trained
-            Perceptron machine learning model generate a prediction.
+            Enter CGPA and Resume Score to predict whether
+            a candidate will be placed or not placed.
         </p>
 
         <ul class="features">
@@ -264,14 +264,14 @@ HTML = """
         </h2>
 
         <p class="card-subtitle">
-            Enter the required feature values below.
+            Enter the candidate details below.
         </p>
 
         <form method="POST">
 
             <div class="input-group">
                 <label for="feature1">
-                    Feature 1
+                    CGPA
                 </label>
 
                 <input
@@ -279,7 +279,7 @@ HTML = """
                     step="any"
                     id="feature1"
                     name="feature1"
-                    placeholder="Enter Feature 1"
+                    placeholder="Enter CGPA"
                     required
                 >
             </div>
@@ -287,7 +287,7 @@ HTML = """
 
             <div class="input-group">
                 <label for="feature2">
-                    Feature 2
+                    Resume Score
                 </label>
 
                 <input
@@ -295,7 +295,7 @@ HTML = """
                     step="any"
                     id="feature2"
                     name="feature2"
-                    placeholder="Enter Feature 2"
+                    placeholder="Enter Resume Score"
                     required
                 >
             </div>
@@ -356,15 +356,24 @@ def home():
     if request.method == "POST":
 
         try:
-            feature1 = float(request.form["feature1"])
-            feature2 = float(request.form["feature2"])
+            # Feature 1 = CGPA
+            cgpa = float(request.form["feature1"])
 
-            # Model expects 2 features
-            input_data = np.array([[feature1, feature2]])
+            # Feature 2 = Resume Score
+            resume_score = float(request.form["feature2"])
 
+            # Model expects:
+            # [CGPA, Resume Score]
+            input_data = np.array([[cgpa, resume_score]])
+
+            # Get model prediction
             result = model.predict(input_data)[0]
 
-            prediction = str(result)
+            # Convert 0/1 into meaningful output
+            if result == 1:
+                prediction = "Placed"
+            else:
+                prediction = "Not Placed"
 
         except Exception as e:
             error = f"Prediction error: {str(e)}"
